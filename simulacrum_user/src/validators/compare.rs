@@ -8,7 +8,7 @@ pub fn gt<I: PartialOrd>(other: I) -> GreaterThan<I> {
     GreaterThan(other)
 }
 
-impl<I: PartialOrd> Validator<I> for GreaterThan<I> {
+impl<I: PartialOrd + Send> Validator<I> for GreaterThan<I> {
     fn validate(&mut self, param: &I) -> bool {
         *param > self.0
     }
@@ -25,7 +25,7 @@ pub fn lt<I: PartialOrd>(other: I) -> LessThan<I> {
     LessThan(other)
 }
 
-impl<I: PartialOrd> Validator<I> for LessThan<I> {
+impl<I: PartialOrd + Send> Validator<I> for LessThan<I> {
     fn validate(&mut self, param: &I) -> bool {
         *param < self.0
     }

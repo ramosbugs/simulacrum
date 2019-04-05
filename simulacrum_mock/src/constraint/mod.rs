@@ -7,7 +7,7 @@ pub use self::result::*;
 ///
 /// All `Constraint`s added to an `Expectation` must all pass in order for the
 /// `Expectation` to pass.
-pub trait Constraint<I> {
+pub trait Constraint<I> : Send {
     /// This constraint has been called with the given parameters. Update the
     ///
     /// Constraint state so that when `verify()` is called, it will return the

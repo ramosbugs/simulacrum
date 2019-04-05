@@ -12,6 +12,7 @@ pub fn deref<I, V>(validator: V) -> Deref<I, V> where
 }
 
 impl<I, V> Validator<*mut I> for Deref<I, V> where
+    I: Send,
     V: Validator<I>
 {
     fn validate(&mut self, param: &*mut I) -> bool {
@@ -26,6 +27,7 @@ impl<I, V> Validator<*mut I> for Deref<I, V> where
 }
 
 impl<I, V> Validator<*const I> for Deref<I, V> where
+    I: Send,
     V: Validator<I>
 {
     fn validate(&mut self, param: &*const I) -> bool {

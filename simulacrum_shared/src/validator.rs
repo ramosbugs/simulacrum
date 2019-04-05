@@ -4,7 +4,7 @@ use debugit::DebugIt;
 ///
 /// To use these, you typically pass them to the `.with()` method for use with
 /// the `Params` Constraint.
-pub trait Validator<I> {
+pub trait Validator<I> : Send {
     /// This object has been called with the given parameters. Return `true`
     /// if they are acceptable, and `false` if they are not.
     fn validate(&mut self, param: &I) -> bool;
@@ -14,7 +14,7 @@ pub trait Validator<I> {
 }
 
 /// `Validator` is automatically implemented for types that implement `PartialEq`.
-impl<I: PartialEq> Validator<I> for I {
+impl<I: PartialEq + Send> Validator<I> for I {
     fn validate(&mut self, param: &I) -> bool {
         &*param == self
     }

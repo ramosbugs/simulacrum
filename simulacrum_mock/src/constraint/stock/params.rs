@@ -4,7 +4,7 @@ use simulacrum_shared::Validator;
 use constraint::{Constraint, ConstraintError, ConstraintResult};
 
 /// A method must be called with parameters that meet certain requirements.
-pub struct Params<I> {
+pub struct Params<I> where I: Send {
     /// Should be `true` if the method has been called with valid parameters every time.
     is_valid: bool,
     received_param_msg: String,
@@ -13,7 +13,7 @@ pub struct Params<I> {
     validator: Box<Validator<I>>
 }
 
-impl<I> Params<I> {
+impl<I> Params<I> where I: Send {
     pub fn new<V>(validator: V) -> Self where
         V: Validator<I> + 'static
     {
@@ -25,7 +25,7 @@ impl<I> Params<I> {
     }
 }
 
-impl<I> Constraint<I> for Params<I> {
+impl<I> Constraint<I> for Params<I> where I: Send {
     fn handle_call(&mut self, params: &I) {
         if self.is_valid {
             self.is_valid = self.validator.validate(params);

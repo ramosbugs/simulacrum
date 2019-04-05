@@ -2,10 +2,10 @@ use simulacrum_shared::Validator;
 
 /// A closure that will be called with the parameters to validate that they 
 /// conform to the requirements.
-pub struct Check<I>(Box<FnMut(&I) -> bool>);
+pub struct Check<I>(Box<FnMut(&I) -> bool + Send>);
 
 pub fn passes<I, F>(closure: F) -> Check<I> where
-    F: FnMut(&I) -> bool + 'static
+    F: FnMut(&I) -> bool + 'static + Send
 {
     Check(Box::new(closure))
 }

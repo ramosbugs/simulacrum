@@ -16,8 +16,8 @@ pub struct Expectation<I, O> where
 {
     name: MethodName,
     constraints: Vec<Box<Constraint<I>>>,
-    modification_fn: Option<Box<FnMut(&mut I)>>,
-    return_fn: Option<Box<FnMut(I) -> O>>
+    modification_fn: Option<Box<FnMut(&mut I) + Send>>,
+    return_fn: Option<Box<FnMut(I) -> O + Send>>
 }
 
 impl<I, O> Expectation<I, O> where
@@ -67,19 +67,19 @@ impl<I, O> Expectation<I, O> where
     }
 
     pub(crate) fn set_modification<F>(&mut self, modification_behavior: F) where
-        F: 'static + FnMut(&mut I)
+        F: 'static + FnMut(&mut I) + Send
     {
         self.modification_fn = Some(Box::new(modification_behavior));
     }
 
     pub(crate) fn set_return<F>(&mut self, return_behavior: F) where
-        F: 'static + FnMut(I) -> O
+        F: 'static + FnMut(I) -> O + Send
     {
         self.return_fn = Some(Box::new(return_behavior));
     }
 }
 
-pub trait ExpectationT {
+pub trait ExpectationT : Send {
     fn as_any(&mut self) -> &mut Any;
 
     fn verify(&self) -> ExpectationResult;

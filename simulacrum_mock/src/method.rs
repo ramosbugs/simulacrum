@@ -114,7 +114,7 @@ pub struct TrackedMethod<'a, I, O> {
 }
 
 impl<'a, I, O> TrackedMethod<'a, I, O> where
-    I: 'static,
+    I: 'static + Send,
     O: 'static
 {
     /// Specify a `Validator` object that will validate parameters when called.
@@ -133,14 +133,14 @@ impl<'a, I, O> TrackedMethod<'a, I, O> where
     ///
     /// The primary use for this is to modify parameters passed as mutable references.
     pub fn modifying<F>(self, modification_behavior: F) -> Self where
-        F: 'static + FnMut(&mut I)
+        F: 'static + FnMut(&mut I) + Send
     {
         self.method.store.get_mut::<I, O>(self.id).set_modification(modification_behavior);
         self
     }
 
     pub fn returning<F>(self, result_behavior: F) -> Self where
-        F: 'static + FnMut(I) -> O
+        F: 'static + FnMut(I) -> O + Send
     {
         self.method.store.get_mut::<I, O>(self.id).set_return(result_behavior);
         self
